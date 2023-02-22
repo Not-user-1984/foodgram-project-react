@@ -18,7 +18,7 @@ class Ingredient(models.Model):
     )
     measurement_unit = models.CharField(
         verbose_name="Единица измериния",
-        max_length=200,
+        max_length=settings.LIMIT_UNIT,
     )
 
     class Meta:
@@ -34,6 +34,46 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class IngredientQuantity(models.Model):
+    """
+    Вспомагательная Таблица 'Количество ингредиентов' имеет связь
+    с таблицей 'Рецепт' один к многим,
+    c таблицей 'Игредиентов'один к многим,
+    """
+    recipe = models.ForeignKey(
+        to='Recipe',
+        on_delete=models.CASCADE,
+        related_name='quantity',
+        verbose_name='Рецепт'
+
+    )
+    ingredient = models.ForeignKey(
+        to='Ingredient',
+        on_delete=models.CASCADE,
+        related_name='quantity',
+        verbose_name='Ингредиент'
+    )
+    quantity = models.BigIntegerField(
+        'Количество Игрендиета',
+        validators=(
+            MinValueValidator(
+                    settings.MIN_LIMIT,
+                    message='Количество не меньше 1'
+                    ),
+                )
+    )
+
+    class Meta:
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe'),
+                name='unique_ingredient_amount',
+            ),
+        )
 
 
 class Tag (models.Model):
@@ -78,18 +118,17 @@ class Recipe (models.Model):
         to=settings.AUTH_USER_MODEL,
 
     )
-    tag = models.ManyToManyField(
-        verbose_name='теги',
-        on_delete=models.CASCADE,
-        related_name='recipes',
-        to='Tag',
-    )
     ingredients = models.ManyToManyField(
         verbose_name='Игредиенты',
-        on_delete=models.CASCADE,
         related_name='recipes',
-        to='Ingredient',
-        through='IngredientQuantity'
+        to=Ingredient,
+        through=IngredientQuantity,
+        blank=True,
+    )
+    tag = models.ManyToManyField(
+        verbose_name='теги',
+        related_name='recipes',
+        to='Tag',
     )
     image = models.ImageField(
         verbose_name='Изображение',
@@ -100,13 +139,13 @@ class Recipe (models.Model):
         max_length=settings.LIMIT_USERNAME,
     )
     text = models.TextField(
-        'Описание'
+        verbose_name='Описание'
     )
     cooking_time = models.BigIntegerField(
         verbose_name='Время приготовления(мин.)',
         validators=(
             MinValueValidator(
-                    settings.MIN_LIMI,
+                    settings.MIN_LIMIT,
                     message='Не меньше 1 минуты'
             ),
         )
@@ -123,43 +162,3 @@ class Recipe (models.Model):
 
     def __str__(self):
         return self.name
-
-
-class IngredientQuantity(models.Model):
-    """
-    Вспомагательная Таблица 'Количество ингредиентов' имеет связь
-    с таблицей 'Рецепт' один к многим,
-    c таблицей 'Игредиентов'один к многим,
-    """
-    recipe = models.ForeignKey(
-        to='Recipe',
-        on_delete=models.CASCADE,
-        related_name='quantity',
-        verbose_name='Рецепт'
-
-    )
-    ingredient = models.ForeignKey(
-        to='Ingredient',
-        on_delete=models.CASCADE,
-        related_name='quantity',
-        verbose_name='Ингредиент'
-    )
-    quantity = models.BigIntegerField(
-        'Количество Игрендиета',
-        validators=(
-            MinValueValidator(
-                    settings.MIN_LIMIT,
-                    message='Количество не меньше 1'
-                    ),
-                )
-    )
-
-    class Meta:
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('ingredient', 'recipe'),
-                name='unique_ingredient_amount',
-            ),
-        )

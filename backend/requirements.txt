@@ -11,4 +11,4 @@ psycopg2-binary
 pyflakes==3.0.1
 PyJWT==2.6.0
 python-dotenv==0.21.1
-requests==2.28.2
+requests

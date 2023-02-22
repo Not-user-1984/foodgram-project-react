@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin, UserManager)
 from django.db import models
-from backend.foodgram.models import Recipe
+from foodgram.models import Recipe
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -49,7 +49,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def __str__(self):
-        return self.email
+        return self.username
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -58,7 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class CustomUserManager(BaseUserManager):
     """
-    Кастомная мaдель Менеджера создания пользователя
+    Кастомная мoдель Менеджера создания пользователя
     """
     def create_superuser(
             self, email, username, first_name, last_name,
@@ -147,3 +147,31 @@ class Cart(models.Model):
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='unique_shopping_cart')
         ]
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        to=CustomUser,
+        verbose_name='пользователь',
+    )
+    recipe = models.ForeignKey(
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        to=Recipe,
+        verbose_name='рецепт',
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_favorite'
+            )
+        ]
+        verbose_name = 'избранный рецепт'
+        verbose_name_plural = 'избранные рецепты'
+
+    def str(self):
+        return f'{self.user} добавил {self.recipe} в список избранных'

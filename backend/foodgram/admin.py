@@ -8,16 +8,9 @@ class AdminRecipe(admin.ModelAdmin):
     list_display = (
         'id',
         'author',
-        'name',
+        'name'
         )
-    search_fields = ('name')
-
-    # def category_post_count(self, obj):
-    #     return obj.post_set.count()
-
-
-    # def category_post_count(self, obj):
-    #     return obj.post_set.count()
+    search_fields = ('name',)
 
 
 @admin.register(Ingredient)
@@ -25,7 +18,7 @@ class AdminIngredient(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'measurement_unit',
+        'measurement_unit'
         )
     search_fields = ('name',)
     list_filter = ('name',)
@@ -37,7 +30,7 @@ class AdminIngredientQuantity(admin.ModelAdmin):
         'id',
         'ingredient',
         'recipe',
-        'amount',
+        'quantity'
     )
 
 
@@ -46,5 +39,5 @@ class AdminTag(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'slug',
+        'slug'
         )

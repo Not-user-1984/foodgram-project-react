@@ -11,6 +11,7 @@ SECRET_KEY = 'django-insecure-9zls+ggt68%6z^(4xmyunp8v#2wtd!hw%0f47r2ioo4$bvi72n
 
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -70,13 +71,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    STATIC_URL = "/backend_static/"
+    STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME', default='postgres'),
+            'USER': os.getenv('POSTGRES_USER', default='postgres'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+            'HOST': os.getenv('DB_HOST', default='db'),
+            'PORT': os.getenv('DB_PORT', default='5432')
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -102,13 +117,14 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "/backend_static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
+# STATIC_URL = "/backend_static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
 
 MEDIA_URL = '/backend_media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -121,25 +137,26 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6
 }
 
-# DJOSER = {
-#     "LOGIN_FIELD": 'email',
-#     "SEND_ACTIVATION_EMAIL": False,
-#     'HIDE_USERS': False,
-#     "SERIALIZERS": {
-#         "user_create": "users.serializers.CustomUserCreateSerializer",
-#         "user": "users.serializers.CustomUserSerializer",
-#         "current_user": "users.serializers.CustomUserSerializer",
-#     },
-#     'PERMISSIONS': {
-#         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-#         'user_list': ['rest_framework.permissions.AllowAny']
-#     },
-# }
+DJOSER = {
+    "LOGIN_FIELD": 'email',
+    "SEND_ACTIVATION_EMAIL": False,
+    'HIDE_USERS': False,
+    "SERIALIZERS": {
+        "user_create": "api.v1.users.serializers.CustomUserCreateSerializer",
+        "user": "api.v1.users.serializers.CustomUserSerializer",
+        "current_user": "api.v1.users.serializers.CustomUserSerializer",
+    },
+    'PERMISSIONS': {
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny']
+    },
+}
 
 
 LIMIT_TEXT = 30
 LIMIT_SLUG = 100
 LIMIT_CHAT = 256
+LIMIT_UNIT = 200
 LIMIT_USERNAME = 150
 LIMIT_EMAIL = 254
 MIN_LIMIT = 1
