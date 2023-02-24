@@ -125,7 +125,7 @@ class Recipe (models.Model):
         through=IngredientQuantity,
         blank=True,
     )
-    tag = models.ManyToManyField(
+    tags = models.ManyToManyField(
         verbose_name='теги',
         related_name='recipes',
         to='Tag',

@@ -1,31 +1,46 @@
+from api.v1.users.serializers import CustomUserSerializer
+from drf_extra_fields.fields import Base64ImageField
 from foodgram.models import Ingredient, IngredientQuantity, Recipe, Tag
 from rest_framework import serializers
-from api.v1.users.serializers import CustomUserSerializer
 from users.models import Cart, Favorite
-from drf_extra_fields.fields import Base64ImageField
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    """
+    Игредиенты рецепта.
+    """
     class Meta:
         model = Ingredient
-        fienlds = (
+        fields = (
             'id',
             'name',
             'measurement_unit',
             )
-        read_only_fields = '__all__',
+        read_only_fields = (
+            'id',
+            'name',
+            'measurement_unit',
+            )
 
 
 class TagSerializer(serializers.ModelSerializer):
+    """
+    теги рецепта
+    """
     class Meta:
         model = Tag
-        fienlds = (
+        fields = (
             'id',
             'name',
             'color',
             'slug'
             )
-        read_only_fields = '__all__',
+        read_only_fields = (
+            'id',
+            'name',
+            'color',
+            'slug'
+            )
 
 
 class IngredientListRecipeSerializer(serializers.ModelSerializer):
@@ -42,13 +57,12 @@ class IngredientListRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientQuantity
-        fienlds = (
+        fields = (
             'id',
             'name',
             'measurement_unit',
             'quantity'
             )
-        read_only_fields = '__all__'
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
@@ -81,16 +95,17 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'id',
             'author',
             'ingredients',
-            'name',
-            'image',
-            'description',
             'tags',
+            'image',
+            'name',
+            'text',
             'cooking_time',
-            'pub_date'
+            'is_in_shopping_cart',
+            'is_favorited',
             )
 
     def get_ingredients(self, obj):
-        queryset = IngredientListRecipeSerializer.objects.filter(recipe=obj)
+        queryset = IngredientQuantity.objects.filter(recipe=obj)
         return IngredientListRecipeSerializer(queryset, many=True).data
 
     def get_is_favorited(self, obj):

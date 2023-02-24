@@ -1,9 +1,7 @@
-from rest_framework import serializers
-from djoser.serializers import UserSerializer, UserCreateSerializer
-
-from users.models import CustomUser, Cart, Follow ,Favorite
-
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from foodgram.models import Recipe
+from rest_framework import serializers
+from users.models import Cart, CustomUser, Favorite, Follow
 
 
 class CustomUserSerializer(UserSerializer):
@@ -23,7 +21,6 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed',
             )
 
-    @staticmethod
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
@@ -34,6 +31,9 @@ class CustomUserSerializer(UserSerializer):
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """
+    кастом создания пользователя.
+    """
     class Meta:
         model = CustomUser
         fields = (
@@ -42,7 +42,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'username',
             'first_name',
             'last_name',
-            'is_subscribed',
             )
     extra_kwargs = {
         'password': {'write_only': True}
@@ -85,7 +84,7 @@ class FollowSerializer(CustomUserSerializer):
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Follow
+        model = CustomUser
         fields = (
             'email',
             'id',
@@ -113,6 +112,8 @@ class FollowSerializer(CustomUserSerializer):
 class CartSerializer(serializers.ModelSerializer):
     """
     Корзина пользователя.
+    Использован дочерний ListPecipesSerialiser,
+    для короткого отабражение списка.
     """
     class Meta:
         model = Cart
@@ -131,6 +132,8 @@ class CartSerializer(serializers.ModelSerializer):
 class FavoriteSerialiser(serializers.ModelSerializer):
     """
     Избранное пользователя.
+    Использован дочерний ListPecipesSerialiser,
+    для короткого отабражение списка.
     """
     class Meta:
         model = Favorite
