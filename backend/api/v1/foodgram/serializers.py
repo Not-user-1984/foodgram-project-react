@@ -147,39 +147,28 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
     def validate(self, data):
-        # посмотреть валидацию по тз
-        tags = self.initial_data['tags']
-        if not tags:
-            raise serializers.ValidationError(
-                'Нужно добавить хотя бы 1 тэг'
-            )
-        ingredients = self.initial_data['ingredients']
-        if not ingredients:
-            raise serializers.ValidationError(
-                'Нужно добавить хотя бы 1 ингредиент'
-            )
-
-        for value in (tags, ingredients):
-            if not isinstance(value, list):
-                raise serializers.ValidationError(
-                    f'{value} должен быть в формате list'
-                )
-
+        ingredients = data['ingredients']
+        ingredients_list = []
         for ingredient in ingredients:
-            if not ingredient['amount'].isdecimal():
-                raise serializers.ValidationError(
-                    'Количество ингредиента должно быть числом'
-                )
-            if not (1 <= int(ingredient['amount']) <= 10000):
-                raise serializers.ValidationError(
-                    'Количество ингредиента может быть от 1 до 10000'
-                )
-        if not (1 <= int(self.initial_data['cooking_time']) <= 1000):
-            raise serializers.ValidationError(
-                'Время приготовление может быть от 1 до 1000'
-            )
-        data['tags'] = tags
-        data['ingredients'] = ingredients
+            ingredient_id = ingredient['id']
+            if ingredient_id in ingredients_list:
+                raise serializers.ValidationError({
+                    'ingredients': 'ингредиенты должны быть уникальными '
+                })
+
+        tags = data['tags']
+        if not tags:
+            raise serializers.ValidationError({
+                'tags': 'нужно выбрать хотя бы один тэг'
+            })
+
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                raise serializers.ValidationError({
+                    'tags': 'тэги должны быть уникальными'
+                })
+            tags_list.append(tag)
         return data
 
     @staticmethod

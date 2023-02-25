@@ -125,10 +125,10 @@ data/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
+backend_media
 # Pyre type checker
 .pyre/
-
+.gitkeep
 # .idea
 .idea
 .DS_Store

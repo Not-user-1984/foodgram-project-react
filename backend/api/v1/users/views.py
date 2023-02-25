@@ -8,11 +8,13 @@ from users.models import CustomUser, Follow
 
 
 class CustomUserViewsSet(UserViewSet):
+    """отбражение пользателя"""
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
 
 class FollowListView(ListAPIView):
+    """на кого подписан пользователь"""
     serializer_class = FollowSerializer
 
     def get_queryset(self):
@@ -22,6 +24,9 @@ class FollowListView(ListAPIView):
 
 
 class FollowViewSet(APIView):
+    """
+    подписка на автора с удалением и валидацией.
+    """
     serializer_class = FollowSerializer
 
     def post(self, request, *args, **kwargs):

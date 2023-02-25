@@ -5,9 +5,11 @@ from api.v1.foodgram.serializers import (IngredientSerializer,
 from api.v1.pagination import NoNumberPagition, PageCastomNumberPagition
 from api.v1.permissions import IsAthorOrReadOnly
 from api.v1.users.serializers import CartSerializer, FavoriteSerialiser
+from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from foodgram.models import Ingredient, Recipe, Tag
+from foodgram.models import Ingredient, IngredientQuantity, Recipe, Tag
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -64,8 +66,7 @@ class RecipeViewSet(ModelViewSet):
         return self.post_actions(
             request=request, pk=pk, serializers=FavoriteSerialiser)
 
-    @action(detail=True, methods=["DELETE"],
-            permission_classes=[IsAuthenticated])
+    @favorite.mapping.delete
     def delete_favorite(self, request, pk):
         return self.delete_actions(
             request=request, pk=pk, model=Favorite)
@@ -76,8 +77,35 @@ class RecipeViewSet(ModelViewSet):
         return self.post_actions(
             request=request, pk=pk, serializers=CartSerializer)
 
-    @action(detail=True, methods=["DELETE"],
-            permission_classes=[IsAuthenticated])
+    @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
         return self.delete_actions(
             request=request, pk=pk, model=Cart)
+
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path='download_shopping_cart',
+        url_name='download_shopping_cart',
+        pagination_class=None,
+        permission_classes=[IsAuthenticated]
+    )
+    def download_shopping_cart(self, request):
+        ingredients = IngredientQuantity.objects.filter(
+            recipe__cart__user=request.user
+        ).values(
+            'ingredient__name',
+            'ingredient__measurement_unit'
+        ).order_by('ingredient__name').annotate(total=Sum('amount'))
+        shopping_list = 'Список покупок:\n'
+        for ingredient in ingredients:
+            shopping_list += ''.join([
+                f'{ingredient["ingredient__name"]} - {ingredient["total"]}/'
+                f'{ingredient["ingredient__measurement_unit"]} \n'
+            ])
+        file_name = 'shopping_list'
+        response = HttpResponse(shopping_list, content_type='text/plain')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{file_name}.txt"'
+        )
+        return response
