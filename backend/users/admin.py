@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cart, CustomUser, Follow
+from .models import Cart, CustomUser, Favorite, Follow
 
 
 @admin.register(CustomUser)
@@ -57,3 +57,12 @@ class CartRecipe(admin.ModelAdmin):
         'user',
         'recipe',
         )
+
+
+@admin.register(Favorite)
+class AdnimFavorite(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'user',
+        'recipe'
+    )

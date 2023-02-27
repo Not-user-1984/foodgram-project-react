@@ -1,7 +1,8 @@
-from api.v1.users.serializers import CustomUserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from foodgram.models import Ingredient, IngredientQuantity, Recipe, Tag
 from rest_framework import serializers
+
+from api.v1.users.serializers import CustomUserSerializer
+from foodgram.models import Ingredient, IngredientQuantity, Recipe, Tag
 from users.models import Cart, Favorite
 
 
@@ -48,12 +49,11 @@ class IngredientListRecipeSerializer(serializers.ModelSerializer):
     сделан переход на вторую таблицу Ingredient.
     вспомогательный сериализатор для RecipeListSerializer.
     """
-    id = serializers.ReadOnlyField(source='ingredient.it')
+    id = serializers.ReadOnlyField(source='ingredient.pk')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
-    quantity = serializers.IntegerField()
 
     class Meta:
         model = IngredientQuantity
@@ -61,7 +61,7 @@ class IngredientListRecipeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            'quantity'
+            'amount'
             )
 
 
@@ -69,14 +69,11 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     """
     вспомогательный сериализатор для RecipeSerializer.
     """
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all()
-    )
-    quantity = serializers.IntegerField()
+    id = serializers.IntegerField()
 
     class Meta:
         model = IngredientQuantity
-        fields = ('id', 'quantity')
+        fields = ('id', 'amount',)
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
@@ -126,6 +123,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     """
     при запросе на один рецепт
     """
+    id = serializers.ReadOnlyField()
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
         )
@@ -147,28 +145,25 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
     def validate(self, data):
-        ingredients = data['ingredients']
-        ingredients_list = []
-        for ingredient in ingredients:
-            ingredient_id = ingredient['id']
-            if ingredient_id in ingredients_list:
-                raise serializers.ValidationError({
-                    'ingredients': 'ингредиенты должны быть уникальными '
-                })
+        inrgedient_list = [item['id'] for item in data.get('ingredients')]
+        if not inrgedient_list:
+            raise serializers.ValidationError(
+                    'Нужно указать минимум 1 Ингредиент.'
+            )
+        if len(inrgedient_list) != len(set(inrgedient_list)):
+            raise serializers.ValidationError(
+                'Ингредиенты должны быть уникальны.'
+            )
 
-        tags = data['tags']
-        if not tags:
-            raise serializers.ValidationError({
-                'tags': 'нужно выбрать хотя бы один тэг'
-            })
-
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'тэги должны быть уникальными'
-                })
-            tags_list.append(tag)
+        tags_list = [item for item in data.get('tags')]
+        if not tags_list:
+            raise serializers.ValidationError(
+                'Нужно указать минимум 1 тег.'
+            )
+        if len(tags_list) > len(set(tags_list)):
+            raise serializers.ValidationError(
+                'Теги должны быть уникальны.'
+            )
         return data
 
     @staticmethod
@@ -178,11 +173,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def create_ingredients(ingredients, recipe):
-        for ingredient in ingredients:
-            IngredientQuantity.objects.create(
-                recipe=recipe, ingredient=ingredient['id'],
-                quantity=ingredient['quantity']
-            )
+        IngredientQuantity.objects.bulk_create(
+            [IngredientQuantity(
+                recipe=recipe,
+                ingredient=Ingredient.objects.get(pk=ingredient['id']),
+                amount=ingredient['amount']
+            ) for ingredient in ingredients]
+        )
 
     def create(self, validated_data):
         author = self.context.get('request').user
@@ -203,6 +200,4 @@ class RecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeListSerializer(instance, context=context).data
+        return RecipeListSerializer(instance, context=self.context).data

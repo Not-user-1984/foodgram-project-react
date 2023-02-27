@@ -1,6 +1,7 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from foodgram.models import Recipe
 from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer, UserSerializer
+
+from foodgram.models import Recipe
 from users.models import Cart, CustomUser, Favorite, Follow
 
 
@@ -138,10 +139,7 @@ class FavoriteSerialiser(serializers.ModelSerializer):
     """
     class Meta:
         model = Favorite
-        fields = (
-            'user',
-            'recipe'
-            )
+        fields = ('user', 'recipe')
 
     def validate(self, attrs):
         request = self.context.get('request')

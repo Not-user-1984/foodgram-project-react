@@ -3,6 +3,11 @@ from django.contrib import admin
 from .models import Ingredient, IngredientQuantity, Recipe, Tag
 
 
+class IngredientAmountInline(admin.TabularInline):
+    model = IngredientQuantity
+    min_num = 1
+
+
 @admin.register(Recipe)
 class AdminRecipe(admin.ModelAdmin):
     list_display = (
@@ -11,6 +16,7 @@ class AdminRecipe(admin.ModelAdmin):
         'name'
         )
     search_fields = ('name',)
+    inlines = [IngredientAmountInline]
 
 
 @admin.register(Ingredient)
@@ -30,7 +36,7 @@ class AdminIngredientQuantity(admin.ModelAdmin):
         'id',
         'ingredient',
         'recipe',
-        'quantity'
+        'amount'
     )
 
 

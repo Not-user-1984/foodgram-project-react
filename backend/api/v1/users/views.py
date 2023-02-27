@@ -1,9 +1,10 @@
-from api.v1.users.serializers import CustomUserSerializer, FollowSerializer
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from api.v1.users.serializers import CustomUserSerializer, FollowSerializer
 from users.models import CustomUser, Follow
 
 
@@ -18,6 +19,7 @@ class FollowListView(ListAPIView):
     serializer_class = FollowSerializer
 
     def get_queryset(self):
+        # return self.request.user.following.all()
         return CustomUser.objects.filter(
             following__user=self.request.user
         )

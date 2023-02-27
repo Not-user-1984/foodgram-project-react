@@ -92,7 +92,7 @@ class RecipeViewSet(ModelViewSet):
     )
     def download_shopping_cart(self, request):
         ingredients = IngredientQuantity.objects.filter(
-            recipe__cart__user=request.user
+            recipe__carts__user=request.user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
@@ -103,7 +103,7 @@ class RecipeViewSet(ModelViewSet):
                 f'{ingredient["ingredient__name"]} - {ingredient["total"]}/'
                 f'{ingredient["ingredient__measurement_unit"]} \n'
             ])
-        file_name = 'shopping_list'
+        file_name = 'Список покупок'
         response = HttpResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = (
             f'attachment; filename="{file_name}.txt"'

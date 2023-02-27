@@ -21,19 +21,20 @@ class Ingredient(models.Model):
         max_length=settings.LIMIT_UNIT,
     )
 
-    class Meta:
+#  Код стайл джанги такой, сначала идет класс Meta
+    class Meta:  # Для всех моделей надо добавить class Meta
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'measurement_unit'],
                 name='unique_ingredient'
             )
         ]
-        ordering = ('name',)
+        ordering = ('name',)  # и в нем добавить сортировку.
         verbose_name = 'Игредиент'
         verbose_name_plural = 'Игредиенты'
 
-    def __str__(self):
-        return self.name
+    def __str__(self):  # а затем метод str
+        return f'{self.name}, {self.measurement_unit}'
 
 
 class IngredientQuantity(models.Model):
@@ -55,7 +56,7 @@ class IngredientQuantity(models.Model):
         related_name='quantity',
         verbose_name='Ингредиент'
     )
-    quantity = models.BigIntegerField(
+    amount = models.BigIntegerField(
         'Количество Игрендиета',
         validators=(
             MinValueValidator(
