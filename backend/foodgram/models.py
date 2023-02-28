@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from django.db import models
 
@@ -21,19 +21,18 @@ class Ingredient(models.Model):
         max_length=settings.LIMIT_UNIT,
     )
 
-#  Код стайл джанги такой, сначала идет класс Meta
-    class Meta:  # Для всех моделей надо добавить class Meta
+    class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'measurement_unit'],
                 name='unique_ingredient'
             )
         ]
-        ordering = ('name',)  # и в нем добавить сортировку.
+        ordering = ('name',)
         verbose_name = 'Игредиент'
         verbose_name_plural = 'Игредиенты'
 
-    def __str__(self):  # а затем метод str
+    def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
 
 
@@ -63,6 +62,10 @@ class IngredientQuantity(models.Model):
                     settings.MIN_LIMIT,
                     message='Количество не меньше 1'
                     ),
+            MaxValueValidator(
+                    settings.MAX_LIMIT,
+                    message='Количество слишком большое'
+                    ),
                 )
     )
 
@@ -88,7 +91,7 @@ class Tag (models.Model):
     )
     color = models.CharField(
         verbose_name="цвет",
-        max_length=10,
+        max_length=settings.LIMIT_USERNAME,
     )
     slug = models.SlugField(
         verbose_name='Url',
@@ -148,6 +151,10 @@ class Recipe (models.Model):
             MinValueValidator(
                     settings.MIN_LIMIT,
                     message='Не меньше 1 минуты'
+            ),
+            MaxValueValidator(
+                    settings.MAX_LIMIT,
+                    message='слишком много минут'
             ),
         )
     )

@@ -9,11 +9,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-9zls+ggt68%6z^(4xmyunp8v#2wtd!hw%0f47r2ioo4$bvi72n'
 
-DEBUG = True
+DEBUG = False
 
 
-ALLOWED_HOSTS = ['*']
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = [
+    'pushkinlive.hopto.org',
+    '127.0.0.1',
+    'localhost',
+    '84.201.167.210',
+    ]
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -89,7 +94,10 @@ if DEBUG:
         }
     }
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+    STATIC_URL = "/backend_static/"
+    STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static/')
+    MEDIA_URL = '/backend_media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -128,8 +136,8 @@ USE_TZ = True
 # STATIC_URL = "/backend_static/"
 # STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
 
-MEDIA_URL = '/backend_media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
+# MEDIA_URL = '/backend_media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -168,5 +176,6 @@ LIMIT_UNIT = 200
 LIMIT_USERNAME = 150
 LIMIT_EMAIL = 254
 MIN_LIMIT = 1
+MAX_LIMIT = 10000
 LIMIT_REVIEW_STR = 15
 LIMIT_USER_CHAT = 13
