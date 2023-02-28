@@ -13,11 +13,11 @@ DEBUG = False
 
 
 ALLOWED_HOSTS = [
-    'pushkinlive.hopto.org',
-    '127.0.0.1',
-    'localhost',
-    '84.201.167.210',
-    ]
+    "localhost",
+    "127.0.0.1",
+    "84.201.167.210",
+    "backend",
+]
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
