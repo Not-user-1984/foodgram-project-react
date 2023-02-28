@@ -9,9 +9,9 @@ services:
       - .env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile 
+    image: docker1984dp/backend_foodgram:latest
+    expose:
+      - 8000
     restart: always
     volumes:
       - static_value:/app/backend_static/
@@ -22,9 +22,7 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: docker1984dp/frontend_foodgram:latest
     volumes:
       - ../frontend/:/app/result_build/
 
