@@ -64,7 +64,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend_foodgram:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend_foodgram:latest
+          sudo docker pull docker1984dp/frontend_foodgram:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
           rm .env
