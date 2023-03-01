@@ -3,8 +3,6 @@ name: foodgram_workflow
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   tests:
