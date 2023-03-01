@@ -17,13 +17,13 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "84.201.167.210",
     "backend",
+    "*",
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_URLS_REGEX = r'^/admin/.*$'
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://*84.201.167.210/',
-    'https://*84.201.167.210/'
-    ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -52,7 +52,6 @@ THIRD_PARTY_APPS = [
 
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
 
 
 MIDDLEWARE = [
