@@ -6,18 +6,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-9zls+ggt68%6z^(4xmyunp8v#2wtd!hw%0f47r2ioo4$bvi72n'
+SECRET_KEY = os.getenv('SECRET_KEY', default='default')
+# SECRET_KEY = 'django-insecure-9zls+ggt68%6z^(4xmyunp8v#2wtd!hw%0f47r2ioo4$bvi72n'
 
 DEBUG = False
 
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "84.201.167.210",
-    "backend",
-]
+ALLOWED_HOSTS = ['*']
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -95,7 +90,7 @@ if DEBUG:
     }
 else:
     STATIC_URL = "/backend_static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static/')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
     MEDIA_URL = '/backend_media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
     DATABASES = {
