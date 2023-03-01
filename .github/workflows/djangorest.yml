@@ -61,7 +61,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd foodgram-project-react/infra
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend_foodgram:latest
+          sudo docker pull docker1984dp/backend_foodgram:latest
           sudo docker pull docker1984dp/frontend_foodgram:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
