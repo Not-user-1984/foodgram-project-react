@@ -15,8 +15,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'http:*//84.201.167.210/',
-    'https:*//84.201.167.210/'
+    'http://*84.201.167.210/',
+    'https://*84.201.167.210/'
     ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
