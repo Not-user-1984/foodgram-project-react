@@ -60,6 +60,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          cd foodgram-project-react/infra
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend_foodgram:latest
           sudo docker pull docker1984dp/frontend_foodgram:latest
           sudo docker-compose stop
@@ -84,6 +85,7 @@ jobs:
     needs: deploy
     if: github.ref == 'refs/heads/master'
     steps:
+
     - name: send message
       uses: appleboy/telegram-action@master
       with:

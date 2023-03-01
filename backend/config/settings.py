@@ -80,8 +80,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 if DEBUG:
-    STATIC_URL = "/backend_static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -89,10 +87,6 @@ if DEBUG:
         }
     }
 else:
-    STATIC_URL = "/backend_static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
-    MEDIA_URL = '/backend_media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -103,6 +97,15 @@ else:
             'PORT': os.getenv('DB_PORT', default='5432')
         }
     }
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
