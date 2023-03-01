@@ -12,9 +12,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='default')
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "84.201.167.210",
+    "backend",
+]
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://*84.201.167.210/',
@@ -104,8 +108,8 @@ else:
         }
     }
 
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -134,11 +138,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-# STATIC_URL = "/backend_static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
-
-# MEDIA_URL = '/backend_media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
