@@ -90,4 +90,4 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_ID }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: ${{ github.workflow }} залито! но ты проверь работает ли :)
+        message: ${{ github.workflow }} залито!! но ты проверь работает ли :)
