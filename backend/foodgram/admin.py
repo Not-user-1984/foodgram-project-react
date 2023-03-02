@@ -13,10 +13,26 @@ class AdminRecipe(admin.ModelAdmin):
     list_display = (
         'id',
         'author',
-        'name'
+        'name',
+        'amount_favorites',
+        'amount_tags',
+        'amount_ingredients'
         )
+
     search_fields = ('name',)
     inlines = [IngredientAmountInline]
+
+    @staticmethod
+    def amount_favorites(obj):
+        return obj.favorites.count()
+
+    @staticmethod
+    def amount_tags(obj):
+        return "\n".join([i[0] for i in obj.tags.values_list('name')])
+
+    @staticmethod
+    def amount_ingredients(obj):
+        return "\n".join([i[0] for i in obj.ingredients.values_list('name')])
 
 
 @admin.register(Ingredient)
