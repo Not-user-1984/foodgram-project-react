@@ -9,7 +9,7 @@ class IngredientSearchFilter(SearchFilter):
 
 class RecipeFilter(FilterSet):
     author = filters.AllValuesMultipleFilter(
-        field_name='recipes__id',
+        field_name='author__id',
         label='Автор'
     )
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
