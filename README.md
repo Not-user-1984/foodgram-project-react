@@ -71,7 +71,7 @@ docker-compose exec backend python manage.py migrate
 
 Загрузите ингредиенты
 ```
-docker-compose exec backend python manage.py load_ingrs
+docker-compose exec backend python manage.py ingred_load
 ```
 
 Создайте суперпользователя
