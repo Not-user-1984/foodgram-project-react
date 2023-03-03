@@ -3,19 +3,23 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
+from api.v1.pagination import PageCastomNumberPagition
 from api.v1.users.serializers import CustomUserSerializer, FollowSerializer
 from users.models import User, Follow
 
 
 class CustomUserViewsSet(UserViewSet):
     """отбражение пользателя"""
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
 
 
 class FollowListView(ListAPIView):
     """на кого подписан пользователь"""
+    permission_classes = [IsAuthenticated]
     serializer_class = FollowSerializer
 
     def get_queryset(self):
@@ -30,6 +34,8 @@ class FollowViewSet(APIView):
     подписка на автора с удалением и валидацией.
     """
     serializer_class = FollowSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageCastomNumberPagition
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
