@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import Cart, CustomUser, Favorite, Follow
+from .models import Cart, User, Favorite, Follow
 
 
-@admin.register(CustomUser)
+@admin.register(User)
 class AdminCustomUser(admin.ModelAdmin):
     """
     Для модели пользователей включена фильтрация по имени и email
