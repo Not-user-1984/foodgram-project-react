@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.v1.users.serializers import CustomUserSerializer, FollowSerializer
-from users.models import CustomUser, Follow
+from users.models import User, Follow
 
 
 class CustomUserViewsSet(UserViewSet):
     """отбражение пользателя"""
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
     serializer_class = CustomUserSerializer
 
 
@@ -20,7 +20,7 @@ class FollowListView(ListAPIView):
 
     def get_queryset(self):
         # return self.request.user.following.all()
-        return CustomUser.objects.filter(
+        return User.objects.filter(
             following__user=self.request.user
         )
 
@@ -46,7 +46,7 @@ class FollowViewSet(APIView):
                 {'error': 'вы уже подписаны на пользователя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        author = get_object_or_404(CustomUser, id=user_id)
+        author = get_object_or_404(User, id=user_id)
         Follow.objects.create(
             user=request.user,
             author_id=user_id
@@ -58,7 +58,7 @@ class FollowViewSet(APIView):
 
     def delete(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
-        get_object_or_404(CustomUser, id=user_id)
+        get_object_or_404(User, id=user_id)
         subscription = Follow.objects.filter(
             user=request.user,
             author_id=user_id
