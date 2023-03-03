@@ -5,14 +5,10 @@ from django.db import models
 from foodgram.models import Recipe
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     Добавлен вход по email
     """
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
-    objects = UserManager()
 
     email = models.EmailField(
         verbose_name='Электроная почта',
@@ -32,6 +28,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=settings.LIMIT_USERNAME,
         )
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
+    objects = UserManager()
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -100,13 +100,13 @@ class Follow(models.Model):
     Подписки пользователя
     """
     user = models.ForeignKey(
-        to=CustomUser,
+        to=User,
         on_delete=models.CASCADE,
         related_name='follower',
         verbose_name='Подписчик',
     )
     author = models.ForeignKey(
-        to=CustomUser,
+        to=User,
         on_delete=models.CASCADE,
         related_name='following',
         verbose_name='Автор',
@@ -128,7 +128,7 @@ class Cart(models.Model):
     Корзина пользователя
     """
     user = models.ForeignKey(
-        to=CustomUser,
+        to=User,
         on_delete=models.CASCADE,
         related_name='carts',
         verbose_name='Пользователь',
@@ -153,7 +153,7 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         on_delete=models.CASCADE,
         related_name='favorites',
-        to=CustomUser,
+        to=User,
         verbose_name='пользователь',
     )
     recipe = models.ForeignKey(

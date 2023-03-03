@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', default='default')
 
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = [
@@ -24,7 +24,7 @@ CORS_URLS_REGEX = r'^/api/.*$'
 CORS_URLS_REGEX = r'^/admin/.*$'
 
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 DJANGO_APPS = [
     'django.contrib.admin',

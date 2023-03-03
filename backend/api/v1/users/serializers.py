@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
 from foodgram.models import Recipe
-from users.models import Cart, CustomUser, Favorite, Follow
+from users.models import Cart, User, Favorite, Follow
 
 
 class CustomUserSerializer(UserSerializer):
@@ -12,7 +12,7 @@ class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'email',
             'id',
@@ -36,7 +36,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     кастом создания пользователя.
     """
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'email',
             'id',
@@ -50,7 +50,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create(
+        user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
@@ -86,7 +86,7 @@ class FollowSerializer(CustomUserSerializer):
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'email',
             'id',
