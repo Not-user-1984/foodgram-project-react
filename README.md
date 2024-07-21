@@ -42,19 +42,13 @@ touch .env
 
 В котором требуется указать переменные окружения, пример:
 ```
-echo SECRET_KEY=************ >> .env
-
-echo DB_ENGINE=django.db.backends.postgresql >> .env
-
-echo DB_NAME=postgres >> .env
-
-echo POSTGRES_USER=postgres  >> .env
-
-echo POSTGRES_PASSWORD=postgres >> .env
-
-echo DB_HOST=db  >> .env
-
-echo DB_PORT=5432  >> .env
+SECRET_KEY=django-insecure-9zls+ggt68%6z^(4xmyunp8v#2wtd!hw%0f47r2ioo4$bvi72n
+DB_ENGINE=django.db.backends.postgresql 
+DB_NAME=postgres 
+POSTGRES_USER=postgres 
+POSTGRES_PASSWORD=postgres 
+DB_HOST=db
+DB_PORT=5432
 ```
 
 В директории infra/, в файле nginx.conf измените адрес(ip/домен), необходимо указать адрес вашего сервера.
@@ -66,6 +60,8 @@ docker-compose up -d --build
 
 Примените миграции
 ```
+
+docker-compose exec backendpython manage.py makemigrations
 docker-compose exec backend python manage.py migrate
 ```
 

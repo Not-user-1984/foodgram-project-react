@@ -2,13 +2,15 @@ version: '3.3'
 services:
   db:
     image: postgres:13.0-alpine
+    platform: linux/amd64 
     volumes:
       - foodgram_database:/var/lib/postgresql/data/
     env_file:
       - .env
 
   backend:
-    image: docker1984dp/backend_foodgram:latest
+    build: ../backend  
+    platform: linux/amd64 
     expose:
       - 8000
     restart: always
@@ -21,7 +23,7 @@ services:
       - ./.env
 
   frontend:
-    image: docker1984dp/frontend_foodgram:latest
+    build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -30,7 +32,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ../infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - static_value:/var/html/static/
       - media_value:/var/html/media/
       - ../frontend/build:/usr/share/nginx/html/
